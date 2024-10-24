@@ -21,9 +21,23 @@ int log_message(int level, char *fmt, const char *file, int line)
         return -1;
     }
 
-    log_level_t *current = log_level_info(level);
-    printf("[%s] %s:%d %s\n", current->p_name, file, line, fmt);
+    FILE *log;
+    log_level_t *log_info = log_level_info(level);
 
+    if (log_file != NULL) {
+        if ((log = fopen(log_file, "a")) != NULL) {
+            fprintf(log, "[%s] %s:%d\n", log_info->l_name, file, line);
+        }
+        fclose(log);
+    }
+
+    printf("[%s] %s:%d %s\n", log_info->l_name, file, line, fmt);
+    return 0;
+}
+
+int set_log_file(char *path)
+{
+    log_file = path;
     return 0;
 }
 
