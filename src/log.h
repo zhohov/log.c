@@ -33,32 +33,33 @@ typedef struct
     const char *p_name;
     int p_code;
     const char *p_color;
-} log_level;
+} log_level_t;
 
-static log_level log_levels[] = {
-    { "DEBUG", LOG_DEBUG, NULL },
-    { "INFO", LOG_INFO, NULL },
-    { "WARNING", LOG_WARNING, NULL },
-    { "ERROR", LOG_ERROR, NULL },
+static log_level_t log_levels[] = {
+    { NULL },
     { "CRITICAL", LOG_FATAL, NULL },
+    { "ERROR", LOG_ERROR, NULL },
+    { "WARNING", LOG_WARNING, NULL },
+    { "INFO", LOG_INFO, NULL },
+    { "DEBUG", LOG_DEBUG, NULL },
     { NULL, -1, NULL },
 };
 
 /* default priority level for logs */
-static int current_log_level = LOG_DEBUG;
+static int log_level = LOG_DEBUG;
 
-static FILE *filepath = NULL;
+static char *log_file = NULL;
 
 /* get structure with current priority */
-log_level *get_current_log_level(void);
+log_level_t *get_log_level(void);
 
 /* Change current priority log level */
 extern int set_log_level(int level);
-extern int log_message(int level, char *fmt, ...);
+extern int log_message(int level, char *fmt, const char *file, int line);
 
 extern int set_file_path(char *path);
-extern FILE *open_file(char *path);
-extern int close_file(char *path);
+extern FILE *open_log_file(void);
+extern int close_log_file(FILE *);
 
 #endif /* LOG_H */
 
