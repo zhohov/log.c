@@ -38,7 +38,7 @@ typedef struct
 static log_level_t log_levels[] = {
     { NULL },
     { "CRITICAL", LOG_FATAL, NULL },
-    { "ERROR", LOG_ERROR, NULL },
+    { "ERROR", LOG_ERROR, "\x1b[31m" },
     { "WARNING", LOG_WARNING, NULL },
     { "INFO", LOG_INFO, NULL },
     { "DEBUG", LOG_DEBUG, NULL },
@@ -53,10 +53,10 @@ static char *log_file = NULL;
 log_level_t *log_level_info(int l_code);
 
 /* Change current priority log level */
-extern int set_log_level(int l_code);
+extern int log_level_set(int l_code);
 extern int log_message(int l_code, char *fmt, const char *file, int line);
 
-extern int set_log_file(char *path);
+extern int log_file_set(char *path);
 extern int close_log_file(FILE *);
 extern FILE *open_log_file(void);
 
