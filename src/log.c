@@ -1,6 +1,9 @@
 #include "log.h"
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 int get_current_time(char *buf, size_t size)
 {
@@ -11,6 +14,29 @@ int get_current_time(char *buf, size_t size)
         return 0;
     }
     return -1;
+}
+
+char *trim_pathname(const char *pathname) {
+    char *new_path = strstr(pathname, "src/");
+    if (new_path != NULL) {
+        return new_path;
+    }
+    return NULL;
+}
+
+char *fmt_pathname(const char *pathname, int line)
+{
+    char *new_path = trim_pathname(pathname);
+    if (new_path != NULL) {
+        size_t new_path_len = strlen(GRAY) + strlen(new_path) + strlen(RESET) + 4;
+        char *path = malloc(new_path_len);
+        if (path == NULL) {
+            return NULL;
+        }
+        snprintf(path, new_path_len, "%s%s:%d%s", GRAY, new_path, line, RESET);
+        return path;
+    }
+    return NULL;
 }
 
 int log_level_set(int level)
@@ -41,12 +67,12 @@ int log_message(int level, char *fmt, const char *file, int line)
 
     if (log_file != NULL) {
         if ((log = fopen(log_file, "a")) != NULL) {
-            fprintf(log, "%s [%s] %s:%d\n", buf, log_info->l_name, file, line);
+            fprintf(log, "%s [%s] %s:%d %s\n", buf, log_info->l_name, trim_pathname(file), line, fmt);
         }
         fclose(log);
     }
 
-    printf("%s %s[%s]%s %s:%d %s\n", buf, log_info->l_color, log_info->l_name, RESET, file, line, fmt);
+    printf("%s %s[%s]%s %s %s\n", buf, log_info->l_color, log_info->l_name, RESET, fmt_pathname(file, line), fmt);
 
     return 0;
 }
@@ -54,6 +80,7 @@ int log_message(int level, char *fmt, const char *file, int line)
 int log_file_set(char *path)
 {
     log_file = path;
+    log_info("set path for log file");
     return 0;
 }
 
