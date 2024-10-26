@@ -29,7 +29,7 @@ log_level_t *log_level_info(int level)
 
 int log_message(int level, char *fmt, const char *file, int line)
 {
-    if (level > log_level) {
+    if (level < log_level) {
         return -1;
     }
 
@@ -46,7 +46,7 @@ int log_message(int level, char *fmt, const char *file, int line)
         fclose(log);
     }
 
-    printf("%s [%s] %s:%d %s\n", buf, log_info->l_name, file, line, fmt);
+    printf("%s %s[%s]%s %s:%d %s\n", buf, log_info->l_color, log_info->l_name, RESET, file, line, fmt);
 
     return 0;
 }

@@ -15,12 +15,21 @@
  *
  * */
 
-#define LOG_DEBUG 5 /* debug-level message */
-#define LOG_INFO 4 /* informational message */
-#define LOG_WARNING 3
-#define LOG_ERROR 2
-#define LOG_FATAL 1
+#define LOG_DEBUG 0 /* debug-level message */
+#define LOG_INFO 1 /* informational message */
+#define LOG_WARNING 2
+#define LOG_ERROR 3
+#define LOG_FATAL 4
 
+/* Text colors for terminal output */
+#define RESET "\x1B[0m"
+#define RED "\x1B[31m"
+#define YELLOW "\x1B[33m"
+#define GREEN "\x1B[32m"
+#define CYAN "\x1B[36m"
+#define GRAY "\x1B[90m"
+
+/* Logging macros */
 #define log(level, fmt) log_message(level, fmt, __FILE__, __LINE__)
 #define log_debug(fmt) log_message(LOG_DEBUG, fmt, __FILE__, __LINE__)
 #define log_info(fmt) log_message(LOG_INFO, fmt, __FILE__, __LINE__)
@@ -36,12 +45,11 @@ typedef struct
 } log_level_t;
 
 static log_level_t log_levels[] = {
-    { NULL },
-    { "CRITICAL", LOG_FATAL, NULL },
-    { "ERROR", LOG_ERROR, "\x1b[31m" },
-    { "WARNING", LOG_WARNING, NULL },
-    { "INFO", LOG_INFO, NULL },
-    { "DEBUG", LOG_DEBUG, NULL },
+    { "DEBUG", LOG_DEBUG, CYAN },
+    { "INFO", LOG_INFO, GREEN },
+    { "WARNING", LOG_WARNING, YELLOW  },
+    { "ERROR", LOG_ERROR, RED },
+    { "FATAL", LOG_FATAL, RED },
     { NULL, -1, NULL },
 };
 
