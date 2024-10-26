@@ -30,12 +30,12 @@
 #define GRAY "\x1B[90m"
 
 /* Logging macros */
-#define log(level, fmt) log_message(level, fmt, __FILE__, __LINE__)
-#define log_debug(fmt) log_message(LOG_DEBUG, fmt, __FILE__, __LINE__)
-#define log_info(fmt) log_message(LOG_INFO, fmt, __FILE__, __LINE__)
-#define log_warning(fmt) log_message(LOG_WARNING, fmt, __FILE__, __LINE__)
-#define log_error(fmt) log_message(LOG_ERROR, fmt, __FILE__, __LINE__)
-#define log_fatal(fmt) log_message(LOG_FATAL, fmt, __FILE__, __LINE__)
+#define log(level, fmt) log_message(level, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_debug(fmt, ...) log_message(LOG_DEBUG, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_info(fmt, ...) log_message(LOG_INFO, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_warning(fmt, ...) log_message(LOG_WARNING, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_error(fmt, ...) log_message(LOG_ERROR, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_fatal(fmt, ...) log_message(LOG_FATAL, fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 
 typedef struct
 {
@@ -62,7 +62,7 @@ log_level_t *log_level_info(int l_code);
 
 /* Change current priority log level */
 extern int log_level_set(int l_code);
-extern int log_message(int l_code, char *fmt, const char *file, int line);
+extern int log_message(int l_code, char *fmt, const char *file, int line, ...);
 
 extern int log_file_set(char *path);
 extern int close_log_file(FILE *);

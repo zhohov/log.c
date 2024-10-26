@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <stdarg.h>
+
 int get_current_time(char *buf, size_t size)
 {
     time_t now = time(NULL);
@@ -53,7 +55,7 @@ log_level_t *log_level_info(int level)
     return &log_levels[level];
 }
 
-int log_message(int level, char *fmt, const char *file, int line)
+int log_message(int level, char *fmt, const char *file, int line, ...)
 {
     if (level < log_level) {
         return -1;
@@ -61,18 +63,30 @@ int log_message(int level, char *fmt, const char *file, int line)
 
     FILE *log;
     char buf[128];
+
+    va_list args;
+    va_start(args, line);
     
     log_level_t *log_info = log_level_info(level);
     get_current_time(buf, sizeof buf);
 
     if (log_file != NULL) {
         if ((log = fopen(log_file, "a")) != NULL) {
-            fprintf(log, "%s [%s] %s:%d %s\n", buf, log_info->l_name, trim_pathname(file), line, fmt);
+            fprintf(log, "%s [%s] %s:%d ", buf, log_info->l_name, trim_pathname(file), line);
+
+            vfprintf(log, fmt, args);
+            fprintf(log, "\n");
+
         }
         fclose(log);
     }
 
-    printf("%s %s[%s]%s %s %s\n", buf, log_info->l_color, log_info->l_name, RESET, fmt_pathname(file, line), fmt);
+    printf("%s %s[%s]%s %s ", buf, log_info->l_color, log_info->l_name, RESET, fmt_pathname(file, line));
+
+    vprintf(fmt, args);
+    printf("\n");
+
+    va_end(args);
 
     return 0;
 }
@@ -80,7 +94,7 @@ int log_message(int level, char *fmt, const char *file, int line)
 int log_file_set(char *path)
 {
     log_file = path;
-    log_info("set path for log file");
+    log_info("set path for log file: %s", path);
     return 0;
 }
 
